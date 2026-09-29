@@ -1,0 +1,7 @@
+name: Safe-Deaths
+version: 1.0.0-SNAPSHOT
+main: io.github.aperson.safedeaths.SafeDeaths
+description: Making no-keep inventory slightly less painful
+author: a-personlol3421
+website: https://github.com/a-personlol3421/safe-deaths
+api-version: "26.2"
