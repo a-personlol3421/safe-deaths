@@ -28,23 +28,17 @@ public class Grave {
         this.inv = player.getInventory().getContents().clone();
     }
 
-    private Grave(
+    public Grave(
             @NotNull UUID uuid,
-            @NotNull Player player,
+            @NotNull OfflinePlayer player,
             @NotNull Location location,
             long timestamp,
-            @NotNull ItemStack[] inventory
+            @NotNull ItemStack[] inv
     ) {
         this.uuid = uuid;
         this.player = player;
         this.location = location;
         this.timestamp = timestamp;
-        this.inv = inventory.clone();
-    }
-
-    public static Grave fromBlock(@NotNull Block block) {
-        Location toFind = block.getLocation();
-
-
+        this.inv = inv;
     }
 }

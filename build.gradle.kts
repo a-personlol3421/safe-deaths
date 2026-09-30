@@ -24,5 +24,7 @@ java {
 tasks {
     runServer {
         minecraftVersion("26.2")
+
+        jvmArgs("-Dcom.mojang.eula.agree=true")
     }
 }
