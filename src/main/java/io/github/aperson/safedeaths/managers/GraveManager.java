@@ -5,38 +5,40 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 
 public class GraveManager {
     private final YamlConfiguration config;
+    private final File file;
+    private final JavaPlugin plugin;
 
-    public GraveManager(JavaPlugin plugin, String path) throws RuntimeException {
-        plugin.getLogger().info("Saving to: " + plugin.getDataFolder() + path);
-        File file = new File(plugin.getDataFolder() + "/" + path);
+    public GraveManager(JavaPlugin plugin, String path) {
+        file = new File(plugin.getDataFolder(), path);
 
         if (!file.exists()) {
-            boolean success = file.getParentFile().mkdirs();
-
-            if (!success) {
-                plugin.getLogger().info("Exists, likely. Ignoring.");
-            }
-
-            plugin.saveResource(plugin.getDataFolder() + path, false);
+            boolean _ = file.getParentFile().mkdirs(); // Assignment because IntelliJ gets REALLY mad
         }
 
+        ConfigurationSerialization.registerClass(Grave.class);
         config = YamlConfiguration.loadConfiguration(file);
+        this.plugin = plugin;
     }
 
-    public void newGrave(@NotNull Player player) {
-        Grave grave = new Grave(player);
+    public Grave newGrave(@NotNull Player player) throws IOException {
+        Grave grave = Grave.assembleFrom(player, plugin);
 
-        config.set("gravestones." + grave.uuid.toString(), grave);
+        config.set("gravestones." + grave.uuid, grave);
+        config.save(file);
+
+        return grave;
     }
 
     @Nullable
@@ -48,7 +50,9 @@ public class GraveManager {
         }
 
         for (String key : section.getKeys(false)) {
-            break;
+            Grave grave = (Grave) section.get(key);
+
+
         }
 
         return null;
@@ -56,12 +60,20 @@ public class GraveManager {
 
     @Nullable
     public Grave fromUUID(@NotNull UUID uuid) {
-        ConfigurationSection gravestone = config.getConfigurationSection("gravestones." + uuid.toString());
+        ConfigurationSection gravestone = config.getConfigurationSection("gravestones." + uuid);
 
         if (gravestone == null) {
             return null;
         }
 
         return null;
+    }
+
+    public void deleteGrave(@NotNull String uuid) {
+        Grave g = (Grave) config.get("gravestones." + uuid);
+
+        if (g != null) {
+            config.set("gravestones." + uuid, null);
+        }
     }
 }

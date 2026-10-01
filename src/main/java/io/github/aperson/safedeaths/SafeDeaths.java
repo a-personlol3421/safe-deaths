@@ -7,13 +7,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class SafeDeaths extends JavaPlugin {
     @Override
     public void onEnable() {
         GraveManager mgr = new GraveManager(this, "gravestones.yml");
-        DeathEvent listener = new DeathEvent(mgr);
+        DeathEvent listener = new DeathEvent(this, mgr);
 
         this.getServer().getPluginManager().registerEvents(listener, this);
 
