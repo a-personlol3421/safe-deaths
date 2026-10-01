@@ -29,11 +29,12 @@ public class GraveManager {
 
         ConfigurationSerialization.registerClass(Grave.class);
         config = YamlConfiguration.loadConfiguration(file);
+
         this.plugin = plugin;
     }
 
     public Grave newGrave(@NotNull Player player) throws IOException {
-        Grave grave = Grave.assembleFrom(player, plugin);
+        Grave grave = Grave.assembleFrom(player);
 
         config.set("gravestones." + grave.uuid, grave);
         config.save(file);

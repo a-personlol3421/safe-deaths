@@ -1,6 +1,7 @@
 package io.github.aperson.safedeaths.managers;
 
 import com.destroystokyo.paper.MaterialSetTag;
+import com.google.j2objc.annotations.Property;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,11 +13,13 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,16 +29,14 @@ public class Grave implements ConfigurationSerializable {
     public final Location location;
     public final long timestamp;
     public final ItemStack[] inv;
-    public final JavaPlugin plugin;
 
-    public static Grave assembleFrom(@NotNull Player player, @NotNull JavaPlugin plugin) {
+    public static Grave assembleFrom(@NotNull Player player) {
         return new Grave(
                 UUID.randomUUID().toString(),
                 player,
                 player.getLocation(),
                 Instant.now().getEpochSecond(),
-                player.getInventory().getContents().clone(),
-                plugin
+                player.getInventory().getContents().clone()
         );
     }
 
@@ -44,15 +45,13 @@ public class Grave implements ConfigurationSerializable {
             @NotNull OfflinePlayer player,
             @NotNull Location location,
             long timestamp,
-            @Nullable ItemStack[] inv,
-            @NotNull JavaPlugin plugin
+            @Nullable ItemStack[] inv
     ) {
         this.uuid = uuid;
         this.player = player;
         this.location = location;
         this.timestamp = timestamp;
         this.inv = inv;
-        this.plugin = plugin;
     }
 
     @Override
@@ -64,11 +63,6 @@ public class Grave implements ConfigurationSerializable {
                 "location", location,
                 "timestamp", timestamp
         );
-    }
-
-    @NotNull
-    public static Grave deserialize(Map<String, Object> map) {
-
     }
 
     public Location findSafe() {
@@ -115,7 +109,6 @@ public class Grave implements ConfigurationSerializable {
         ResolvableProfile rp = ResolvableProfile.resolvableProfile(this.player.getPlayerProfile());
 
         s.setProfile(rp);
-        NamespacedKey key = new NamespacedKey(plugin)
 
         s.update(true);
     }
