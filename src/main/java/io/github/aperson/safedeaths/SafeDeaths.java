@@ -1,5 +1,6 @@
 package io.github.aperson.safedeaths;
 
+import io.github.aperson.safedeaths.listen.BreakEvent;
 import io.github.aperson.safedeaths.listen.DeathEvent;
 import io.github.aperson.safedeaths.managers.GraveManager;
 import org.bukkit.Bukkit;
@@ -15,8 +16,10 @@ public class SafeDeaths extends JavaPlugin {
     public void onEnable() {
         GraveManager mgr = new GraveManager(this, "gravestones.yml");
         DeathEvent listener = new DeathEvent(this, mgr);
+        BreakEvent listener1 = new BreakEvent(this, mgr);
 
         this.getServer().getPluginManager().registerEvents(listener, this);
+        this.getServer().getPluginManager().registerEvents(listener1, this);
 
         this.getLogger().info("Registered event listeners.");
     }

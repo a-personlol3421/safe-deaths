@@ -14,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class GraveManager {
     private final YamlConfiguration config;
@@ -33,9 +35,16 @@ public class GraveManager {
         this.plugin = plugin;
     }
 
+    @Nullable
     public Grave newGrave(@NotNull Player player) throws IOException {
         Grave grave = Grave.assembleFrom(player);
+        Location safe = grave.findSafe();
 
+        if (safe == null) {
+            return null;
+        }
+
+        grave.location = safe;
         config.set("gravestones." + grave.uuid, grave);
         config.save(file);
 
@@ -56,14 +65,22 @@ public class GraveManager {
             // IntelliJ also gets mad for dereferencing something that MAY be null.
             // So this is here now.
             if (grave == null) {
+                plugin.getLogger().info("Grave is somehow null");
                 return null;
             }
 
-            if (grave.location == block.getLocation()) {
+            plugin.getSLF4JLogger().info("Comparing ({},{},{}) to ({},{},{})", grave.location.getBlockX(), grave.location.getBlockY(), grave.location.getBlockZ(),
+                    block.getLocation().getBlockX(),
+                    block.getLocation().getBlockY(),
+                    block.getLocation().getBlockZ());
+
+            if (grave.location.toBlockLocation().equals(block.getLocation().toBlockLocation())) {
+                plugin.getLogger().info("Found it!");
                 return grave;
             }
         }
 
+        plugin.getLogger().info("Found nothing...");
         return null;
     }
 

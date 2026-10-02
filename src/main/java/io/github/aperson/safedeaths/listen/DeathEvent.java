@@ -24,10 +24,9 @@ public class DeathEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent event) throws IOException {
         Grave g = mgr.newGrave(event.getPlayer());
-        Location l = g.findSafe();
 
-        if (l != null) {
-            g.place(l);
+        if (g != null) {
+            g.place();
             event.setShouldDropExperience(true);
         } else {
             event.getItemsToKeep().addAll(event.getDrops());

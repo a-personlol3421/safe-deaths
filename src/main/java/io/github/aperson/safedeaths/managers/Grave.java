@@ -26,7 +26,7 @@ import java.util.UUID;
 public class Grave implements ConfigurationSerializable {
     public final String uuid;
     public final OfflinePlayer player;
-    public final Location location;
+    public Location location;
     public final long timestamp;
     public final ItemStack[] inv;
 
@@ -49,7 +49,7 @@ public class Grave implements ConfigurationSerializable {
     ) {
         this.uuid = uuid;
         this.player = player;
-        this.location = location;
+        this.location = location.toBlockLocation();
         this.timestamp = timestamp;
         this.inv = inv;
     }
@@ -66,7 +66,7 @@ public class Grave implements ConfigurationSerializable {
     }
 
     public Location findSafe() {
-        for (int r = 1; r <= 5; r++) {
+        for (int r = 0; r <= 5; r++) {
             for (int z = -r; z <= r; z++) {
                 for (int y = -r; y <= r; y++) {
                     for (int x = -r; x <= r; x++) {
@@ -100,8 +100,8 @@ public class Grave implements ConfigurationSerializable {
         return null;
     }
 
-    public void place(Location l) {
-        Block b = l.getBlock();
+    public void place() {
+        Block b = location.getBlock();
 
         b.setType(Material.PLAYER_HEAD);
         Skull s = (Skull) b.getState();
