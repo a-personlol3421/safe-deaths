@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class BreakEvent implements Listener {
@@ -35,8 +36,14 @@ public class BreakEvent implements Listener {
 
         event.setDropItems(false);
 
+        PlayerInventory inv = event.getPlayer().getInventory();
+
         for (int i = 0; i < g.inv.length; i++) {
-            event.getPlayer().getInventory().setItem(i, g.inv[i]);
+            if (inv.getItem(i) != null) {
+                event.getPlayer().give(g.inv[i]);
+                continue;
+            }
+            inv.setItem(i, g.inv[i]);
         }
 
         plugin.getLogger().info("replaced all");
