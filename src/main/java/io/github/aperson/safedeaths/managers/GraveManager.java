@@ -53,18 +53,15 @@ public class GraveManager {
         for (String key : section.getKeys(false)) {
             Grave grave = (Grave) section.get(key);
 
+            // IntelliJ also gets mad for dereferencing something that MAY be null.
+            // So this is here now.
+            if (grave == null) {
+                return null;
+            }
 
-        }
-
-        return null;
-    }
-
-    @Nullable
-    public Grave fromUUID(@NotNull UUID uuid) {
-        ConfigurationSection gravestone = config.getConfigurationSection("gravestones." + uuid);
-
-        if (gravestone == null) {
-            return null;
+            if (grave.location == block.getLocation()) {
+                return grave;
+            }
         }
 
         return null;
